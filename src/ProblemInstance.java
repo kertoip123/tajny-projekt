@@ -23,6 +23,10 @@ public class ProblemInstance {
         // TODO create distance/costs matrix
     }
 
+    public void createDistanceMatrix(){
+        distance = new int[deliveryPoints.length+magazines.length][deliveryPoints.length+magazines.length];
+    }
+
     public void printResultsToConsole(){
         for(int i=0; i<magazines.length; i++){
             for(int j=0; j<Magazine.vehicles;j++){
