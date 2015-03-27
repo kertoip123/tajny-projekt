@@ -9,7 +9,9 @@ public class Car {
     Magazine parentMagazine;
     boolean jobDone = false;
     List<Integer> roadMap;
-    double zawartoscPaliwaWBaku=0.0;
+    int chujowaZmienna = 100000;
+
+
 
     public Car (Magazine parent, int i){
         this.index = i;
