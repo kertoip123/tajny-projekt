@@ -21,6 +21,7 @@ public class Main {
             int v = scanner.nextInt();
             int c = scanner.nextInt();
 
+            Magazine.setVehicles(v);
             DeliveryPoint[] dp = new DeliveryPoint[r];
             Magazine [] m = new Magazine[d];
 
@@ -36,6 +37,7 @@ public class Main {
                 else
                     m[index-r] = new Magazine(x, y, index+1);
             }
+
             problem = new ProblemInstance(r, d, v, c, dp, m);
         }
         catch (FileNotFoundException e) { e.printStackTrace(); }
