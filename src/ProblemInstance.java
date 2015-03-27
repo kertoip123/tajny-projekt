@@ -8,12 +8,13 @@ public class ProblemInstance {
 
     public ProblemInstance (int r, int d, int v, int c, DeliveryPoint [] dp, Magazine [] m) {
         deliveryPoints = new DeliveryPoint[r];
-        magazines = new Magazine[d];
+       // magazines = new Magazine[d];
+
         Magazine.setVehicles(v);
         magazines = m;
         deliveryPoints = dp;
         for(Magazine x: magazines)
-            x.setCapacities(c);
+            x.createCars().setCapacities(c);
     }
 
 

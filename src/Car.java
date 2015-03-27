@@ -11,10 +11,11 @@ public class Car {
     List<Integer> roadMap;
 
     public Car (Magazine parent, int i){
+        this.index = i;
         this.parentMagazine = parent;
-        position = parent.getNumber();
-        roadMap = new LinkedList<Integer>();
-        roadMap.add(position);
+        this.position = parent.getNumber();
+        this.roadMap = new LinkedList<Integer>();
+        this.roadMap.add(position);
     }
 
     public void setCapacity(int c){

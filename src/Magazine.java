@@ -4,7 +4,7 @@ public class Magazine {
 
     int x, y;       // coordinates
     int number;
-    Car [] cars;
+    Car [] cars = null;
 
     //TODO list of neighbours (only Delivery Points)
 
@@ -12,12 +12,6 @@ public class Magazine {
         this.x = x;
         this.y = y;
         this.number = number;
-
-        cars = new Car[vehicles];
-        for(int i=0;i<vehicles;i++){
-            cars[i] = new Car(this,i+1);
-        }
-
     }
 
     public int getNumber(){ return number; }
@@ -26,9 +20,18 @@ public class Magazine {
         vehicles = v;
     }
 
-    public void setCapacities(int c){
+    public Magazine setCapacities(int c){
         for(Car x: cars){
             x.setCapacity(c);
         }
+        return this;
+    }
+
+    public Magazine createCars(){
+        cars = new Car[vehicles];
+        for(int i=0;i<vehicles;i++){
+            cars[i] = new Car(this,i+1);
+        }
+        return this;
     }
 }
