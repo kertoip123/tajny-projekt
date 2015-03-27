@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         ProblemInstance problemInstance = readInput("test.txt");
-
+        problemInstance.printResultsToConsole();
     }
 
     private static ProblemInstance readInput (String fileName){
@@ -20,8 +20,6 @@ public class Main {
             int d = scanner.nextInt();
             int v = scanner.nextInt();
             int c = scanner.nextInt();
-
-            problem = new ProblemInstance(r, d, v, c);
 
             DeliveryPoint[] dp = new DeliveryPoint[r];
             Magazine [] m = new Magazine[d];
@@ -38,8 +36,7 @@ public class Main {
                 else
                     m[index-r] = new Magazine(x, y, index+1);
             }
-
-            problem.setDeliveryPoints(dp).setMagazines(m).createCostsMatrix();
+            problem = new ProblemInstance(r, d, v, c, dp, m);
         }
         catch (FileNotFoundException e) { e.printStackTrace(); }
 
