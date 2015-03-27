@@ -9,8 +9,6 @@ public class Car {
     Magazine parentMagazine;
     boolean jobDone = false;
     List<Integer> roadMap;
-    int chujowaZmienna = 100000;
-
 
 
     public Car (Magazine parent, int i){

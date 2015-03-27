@@ -25,6 +25,15 @@ public class ProblemInstance {
 
     public void createDistanceMatrix(){
         distance = new int[deliveryPoints.length+magazines.length][deliveryPoints.length+magazines.length];
+
+    }
+
+    int pitagoras(int x1, int y1, int x2, int y2){
+        int temp = (x1-x2)*(x1-x2)+(y1-y2)*(y1-y2);
+        double result = (double) temp;
+        double root = Math.sqrt(result);
+        int finalResult = (int) Math.round(root);
+        return finalResult;
     }
 
     public void printResultsToConsole(){
