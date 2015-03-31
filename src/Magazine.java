@@ -38,12 +38,15 @@ public class Magazine {
         return this;
     }
 
-    void setNeighbours(Integer [] neighbourArray){
+    void setNeighbours(Integer [] neighbourArray, int start, int finish){
         dpNeighbourhood = new LinkedList<Integer>();
         for(Integer neighbour: neighbourArray){
             dpNeighbourhood.add(++neighbour);
         }
         dpNeighbourhood.remove(0);
+        dpNeighbourhood.remove(0);
+        for(int j=start+1; j<finish+1;j++)
+            dpNeighbourhood.remove(new Integer(j));
     }
 
 }

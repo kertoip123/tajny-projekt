@@ -22,6 +22,7 @@ public class DeliveryPoint {
             neighbourhood.add(++neighbour);
         }
         neighbourhood.remove(0);
+
     }
 
     int getOrder(){

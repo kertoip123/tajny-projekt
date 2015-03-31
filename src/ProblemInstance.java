@@ -36,7 +36,7 @@ public class ProblemInstance {
             for(;j<total;j++){
                 distance[i][j]=pitagoras(deliveryPoints[i].x,deliveryPoints[i].y,magazines[j-deliveryPoints.length].x,magazines[j-deliveryPoints.length].y);
             }
-            // TODO Limit list of neighbourhood to DP elements only (without magazines)
+            // TODO Limit list of neighbourhood to DP
             Integer [] tempArray =  intArrayToIntegerArray(distance[i]);
             Integer [] indexes = sortNeighbourhood(tempArray);
             deliveryPoints[i].setNeighbours(indexes);
@@ -48,7 +48,7 @@ public class ProblemInstance {
             }
             Integer [] tempArray =  intArrayToIntegerArray(distance[i]);
             Integer [] indexes = sortNeighbourhood(tempArray);
-            magazines[(i-deliveryPoints.length)].setNeighbours(indexes);
+            magazines[(i-deliveryPoints.length)].setNeighbours(indexes, deliveryPoints.length, total);
         }
     }
 
