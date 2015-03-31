@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+import java.util.List;
 
 public class Magazine {
     static int vehicles;
@@ -5,6 +7,7 @@ public class Magazine {
     int x, y;       // coordinates
     int number;
     Car [] cars = null;
+    List<Integer> dpNeighbourhood;
 
     //TODO list of neighbours (only Delivery Points)
 
@@ -34,4 +37,16 @@ public class Magazine {
         }
         return this;
     }
+
+    void setNeighbours(Integer [] neighbourArray, int start, int finish){
+        dpNeighbourhood = new LinkedList<Integer>();
+        for(Integer neighbour: neighbourArray){
+            dpNeighbourhood.add(++neighbour);
+        }
+        dpNeighbourhood.remove(0);
+        dpNeighbourhood.remove(0);
+        for(int j=start+1; j<finish+1;j++)
+            dpNeighbourhood.remove(new Integer(j));
+    }
+
 }
