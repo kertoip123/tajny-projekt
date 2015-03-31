@@ -1,3 +1,5 @@
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class ProblemInstance {
 
@@ -16,7 +18,6 @@ public class ProblemInstance {
         for(Magazine x: magazines)
             x.createCars().setCapacities(c);
     }
-
 
 
     public void createCostsMatrix() {
@@ -66,5 +67,22 @@ public class ProblemInstance {
         }
     }
 
+    Integer[] decodeContinousToDiscrete(final Integer permutation[]){
+        int size = permutation.length;
+        final Integer[] indexes = new Integer[size];
+        for(int i=0; i < size ; i++)
+            indexes[i] = i;
+        Arrays.sort(indexes, new Comparator<Integer>() {
+            @Override
+            public int compare(final Integer o1, final Integer o2) {
+                return Integer.compare(permutation[o1], permutation[o2]);
+            }
+        });
+        return indexes;
+    }
+
+    int getTotalCarNumber(){
+        return magazines.length*Magazine.vehicles;
+    }
 
 }
