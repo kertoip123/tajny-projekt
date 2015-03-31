@@ -9,8 +9,8 @@ public class Car {
     Magazine parentMagazine;
     boolean jobDone = false;
     List<Integer> roadMap;
-
-
+    
+    
     public Car (Magazine parent, int i){
         this.index = i;
         this.parentMagazine = parent;

@@ -10,7 +10,7 @@ public class Main {
         problemInstance.printResultsToConsole();
     }
 
-    private static ProblemInstance readInput (String fileName){
+    static ProblemInstance readInput (String fileName){
 
         ProblemInstance problem = null;
 

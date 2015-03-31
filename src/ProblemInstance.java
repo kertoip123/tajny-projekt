@@ -85,4 +85,5 @@ public class ProblemInstance {
         return magazines.length*Magazine.vehicles;
     }
 
+
 }
