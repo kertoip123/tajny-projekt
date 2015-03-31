@@ -16,8 +16,12 @@ public class DeliveryPoint {
         this.number = number;
     }
 
-    void setNeighbours(int neighbourNumber){
+    void setNeighbours(Integer [] neighbourArray){
         neighbourhood = new LinkedList<Integer>();
+        for(Integer neighbour: neighbourArray){
+            neighbourhood.add(++neighbour);
+        }
+        neighbourhood.remove(0);
     }
 
     int getOrder(){

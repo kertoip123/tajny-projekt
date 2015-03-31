@@ -36,12 +36,19 @@ public class ProblemInstance {
             for(;j<total;j++){
                 distance[i][j]=pitagoras(deliveryPoints[i].x,deliveryPoints[i].y,magazines[j-deliveryPoints.length].x,magazines[j-deliveryPoints.length].y);
             }
-            // TODO sort for deliveryPoint[i] neighbourhood list
+            // TODO Limit list of neighbourhood to DP elements only (without magazines)
+            Integer [] tempArray =  intArrayToIntegerArray(distance[i]);
+            Integer [] indexes = sortNeighbourhood(tempArray);
+            deliveryPoints[i].setNeighbours(indexes);
+
         }
         for(;i<total;i++){
             for(int j=0;j<deliveryPoints.length;j++) {
                 distance[i][j] = pitagoras(magazines[i-deliveryPoints.length].x, magazines[i-deliveryPoints.length].y, deliveryPoints[j].x, deliveryPoints[j].y);
             }
+            Integer [] tempArray =  intArrayToIntegerArray(distance[i]);
+            Integer [] indexes = sortNeighbourhood(tempArray);
+            magazines[(i-deliveryPoints.length)].setNeighbours(indexes);
         }
     }
 
@@ -67,9 +74,10 @@ public class ProblemInstance {
         }
     }
 
-    Integer[] decodeContinousToDiscrete(final Integer permutation[]){
+    Integer[] sortNeighbourhood(final Integer permutation[]){
         int size = permutation.length;
         final Integer[] indexes = new Integer[size];
+        final Integer[] finalIndexes = new Integer[size];
         for(int i=0; i < size ; i++)
             indexes[i] = i;
         Arrays.sort(indexes, new Comparator<Integer>() {
@@ -79,6 +87,15 @@ public class ProblemInstance {
             }
         });
         return indexes;
+    }
+
+    Integer [] intArrayToIntegerArray(int []array){
+        Integer [] tempArray =  new Integer[array.length];
+        int k=0;
+        for (int value : array) {
+            tempArray[k++] = Integer.valueOf(value);
+        }
+        return tempArray;
     }
 
     int getTotalCarNumber(){
