@@ -37,6 +37,17 @@ public class ProblemInstance {
             }
             // TODO sort for deliveryPoint[i] neighbourhood list
         }
+        for(;i<total;i++){
+            for(int j=0;j<deliveryPoints.length;j++) {
+                distance[i][j] = pitagoras(magazines[i-deliveryPoints.length].x, magazines[i-deliveryPoints.length].y, deliveryPoints[j].x, deliveryPoints[j].y);
+            }
+        }
+    }
+
+    int getDistance(int i, int j){
+        if(distance[i][j]==0)
+            System.out.println("Operation not permitted !!");
+        return distance[i][j];
     }
 
     int pitagoras(int x1, int y1, int x2, int y2){
