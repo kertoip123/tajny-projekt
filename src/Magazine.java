@@ -43,8 +43,6 @@ public class Magazine {
         for(Integer neighbour: neighbourArray){
             dpNeighbourhood.add(++neighbour);
         }
-        dpNeighbourhood.remove(0);
-        dpNeighbourhood.remove(0);
         for(int j=start+1; j<finish+1;j++)
             dpNeighbourhood.remove(new Integer(j));
     }
