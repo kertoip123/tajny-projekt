@@ -8,9 +8,12 @@ public class Main {
         ProblemInstance problemInstance = readInput("test.txt");
         problemInstance.createDistanceMatrix();
         problemInstance.printResultsToConsole();
+
+        TestSolution testSolution = new TestSolution("problem_10.txt", "problem_10_solution.txt");
+        System.out.println("test goal value: " + testSolution);
     }
 
-    private static ProblemInstance readInput (String fileName){
+    static ProblemInstance readInput (String fileName){
 
         ProblemInstance problem = null;
 
