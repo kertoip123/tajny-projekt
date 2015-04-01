@@ -16,16 +16,26 @@ public class DeliveryPoint {
         this.number = number;
     }
 
-    void setNeighbours(Integer [] neighbourArray){
+    void setNeighbours(Integer [] neighbourArray, int start, int finish){
         neighbourhood = new LinkedList<Integer>();
         for(Integer neighbour: neighbourArray){
-            neighbourhood.add(++neighbour);
+            neighbourhood.add(neighbour);
         }
         neighbourhood.remove(0);
+        for(int j=start; j<finish;j++)
+            neighbourhood.remove(new Integer(j));
 
+    }
+
+    Integer getClosestNeighbour(){
+        return neighbourhood.get(0);
     }
 
     int getOrder(){
         return order;
+    }
+
+    int getNumber(){
+        return number;
     }
 }

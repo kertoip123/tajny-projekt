@@ -7,9 +7,11 @@ public class Main {
     public static void main(String[] args) {
         ProblemInstance problemInstance = readInput("test.txt");
         problemInstance.createDistanceMatrix();
+        problemInstance.createSortedCostList();
+        problemInstance.solveThisProblem();//One DP is satisfied by the best car available
         problemInstance.printResultsToConsole();
 
-        TestSolution testSolution = new TestSolution("problem_10.txt", "problem_10_solution.txt");
+        TestSolution testSolution = new TestSolution("problem_10.txt", "problem_10solution.txt");
         System.out.println("test goal value: " + testSolution);
     }
 
@@ -36,10 +38,10 @@ public class Main {
                 y = scanner.nextInt();
                 if(index<r) {
                     o = scanner.nextInt();
-                    dp[index] = new DeliveryPoint(x, y, o, index+1);
+                    dp[index] = new DeliveryPoint(x, y, o, index);
                 }
                 else
-                    m[index-r] = new Magazine(x, y, index+1);
+                    m[index-r] = new Magazine(x, y, index);
             }
 
             problem = new ProblemInstance(r, d, v, c, dp, m);

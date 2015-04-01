@@ -33,7 +33,7 @@ public class Magazine {
     public Magazine createCars(){
         cars = new Car[vehicles];
         for(int i=0;i<vehicles;i++){
-            cars[i] = new Car(this,i+1);
+            cars[i] = new Car(this,i);
         }
         return this;
     }
@@ -41,10 +41,18 @@ public class Magazine {
     void setNeighbours(Integer [] neighbourArray, int start, int finish){
         dpNeighbourhood = new LinkedList<Integer>();
         for(Integer neighbour: neighbourArray){
-            dpNeighbourhood.add(++neighbour);
+            dpNeighbourhood.add(neighbour);
         }
-        for(int j=start+1; j<finish+1;j++)
+        for(int j=start; j<finish;j++)
             dpNeighbourhood.remove(new Integer(j));
+    }
+
+    Integer getClosestNeighbour(){
+        return dpNeighbourhood.get(0);
+    }
+
+    Car getCar(int index){
+        return cars[index];
     }
 
 }
