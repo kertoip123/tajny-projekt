@@ -4,17 +4,21 @@ import java.util.Scanner;
 
 public class Main {
 
+    private static final String DIRECTORY = "10_przykladowych_problemow_z_rozwiazaniami/";
+
     public static void main(String[] args) {
-        ProblemInstance problemInstance = readInput("problem_1.txt");
+        ProblemInstance problemInstance = readInput(DIRECTORY+"problem_3.txt");
         problemInstance.createDistanceMatrix();
         problemInstance.createSortedCostList();
-        for(int i=0;i<problemInstance.deliveryPoints.length;i++)
+
+        while (problemInstance.dpServed < problemInstance.deliveryPoints.length)
             problemInstance.solveThisProblem();//One DP is satisfied by the best car available
         problemInstance.moveRemainingCarsToParentMagazines();
         problemInstance.printResultsToConsole();
         System.out.println(problemInstance.ourGoalValue);
 
-        TestSolution testSolution = new TestSolution("problem_10.txt", "problem_10solution.txt");
+
+       TestSolution testSolution = new TestSolution("problem_3.txt", "problem_3_solution.txt");
         System.out.println("test goal value: " + testSolution);
     }
 

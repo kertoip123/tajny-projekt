@@ -11,6 +11,7 @@ public class ProblemInstance {
     List<Pair<Integer, Integer>> costs;
     final int NO_COMPARISON_AVAILABLE = -1;
     int ourGoalValue=0;
+    int dpServed = 0;
 
     //Temp
     int theBestCarIndex = NO_COMPARISON_AVAILABLE;
@@ -60,18 +61,23 @@ public class ProblemInstance {
             deliveryPoints[i].setNeighbours(indexes, deliveryPoints.length, total);
 
         }
-        for(;i<total;i++){
-            for(int j=0;j<deliveryPoints.length;j++) {
-                distance[i][j] = pitagoras(magazines[i-deliveryPoints.length].x, magazines[i-deliveryPoints.length].y, deliveryPoints[j].x, deliveryPoints[j].y);
+        for(;i<total;i++) {
+            int j;
+            for (j = 0; j < deliveryPoints.length; j++) {
+                distance[i][j] = pitagoras(magazines[i - deliveryPoints.length].x, magazines[i - deliveryPoints.length].y, deliveryPoints[j].x, deliveryPoints[j].y);
             }
-            Integer [] tempArray =  intArrayToIntegerArray(distance[i]);
-            Integer [] indexes = sortNeighbourhood(tempArray);
-            magazines[(i-deliveryPoints.length)].setNeighbours(indexes, deliveryPoints.length, total);
+            for (; j < total; j++) {
+                distance[i][j] = -1;
+
+            }
+            Integer[] tempArray = intArrayToIntegerArray(distance[i]);
+            Integer[] indexes = sortNeighbourhood(tempArray);
+            magazines[(i - deliveryPoints.length)].setNeighbours(indexes, deliveryPoints.length, total);
         }
     }
 
-    int getDistance(int i, int j){
-        if(distance[i][j]==0)
+    int getDistance(int i, int j) {
+        if (distance[i][j] == -1)
             System.out.println("Operation not permitted !!");
         return distance[i][j];
     }
@@ -124,10 +130,12 @@ public class ProblemInstance {
             for(Car c: m.cars)
                 if(!c.isJobDone())
                     compareWithTheLeader(c);
+        if(theBestPlaceToGo == NO_COMPARISON_AVAILABLE) return;
         Car leader = magazines[theBestParentMagazine-deliveryPoints.length].getCar(theBestCarIndex);
         DeliveryPoint bestDestination = deliveryPoints[theBestPlaceToGo];
         makeMove(leader, bestDestination);
         updateLists(theBestPlaceToGo);
+        dpServed++;
     }
 
     void compareWithTheLeader(Car c, int theBestCarIndex, int theBestPlaceToGo, int theBestParentMagazine){
@@ -165,7 +173,8 @@ public class ProblemInstance {
     void compareWithTheLeader(Car c){
         if(c.isInTravel()){//Determining whether Magazine or DP should be considered
             int closestNeigh = deliveryPoints[c.position].getClosestNeighbour().intValue();
-            if(deliveryPoints[closestNeigh].order<=c.getCapacity()){
+            if(closestNeigh == -1) return;
+            if(validateSolution(deliveryPoints[closestNeigh].order, c.getCapacity())){
                 if(theBestCarIndex==NO_COMPARISON_AVAILABLE){
                     theBestCarIndex = c.index;
                     theBestParentMagazine = c.parentMagazine.getNumber();
@@ -177,15 +186,18 @@ public class ProblemInstance {
                     theBestPlaceToGo = closestNeigh;
                 }
             }
+
+            else deliveryPoints[c.position].neighbourhood.remove(0);
+
         }
         else {
             int closestNeigh = magazines[c.position-deliveryPoints.length].getClosestNeighbour().intValue();
-            if (deliveryPoints[closestNeigh].order <= c.getCapacity()) {
+            if (deliveryPoints[closestNeigh].order<=c.getCapacity()) {
                 if (theBestCarIndex == NO_COMPARISON_AVAILABLE) {
                     theBestCarIndex = c.index;
                     theBestParentMagazine = c.parentMagazine.getNumber();
                     theBestPlaceToGo = closestNeigh;
-                } else if (distance[magazines[theBestParentMagazine-deliveryPoints.length].getCar(theBestCarIndex).getPosition()][theBestPlaceToGo] >
+                } else if (distance[magazines[theBestParentMagazine - deliveryPoints.length].getCar(theBestCarIndex).getPosition()][theBestPlaceToGo] >
                         distance[c.getPosition()][closestNeigh]) {
                     theBestCarIndex = c.index;
                     theBestParentMagazine = c.parentMagazine.getNumber();
@@ -194,6 +206,48 @@ public class ProblemInstance {
             }
         }
     }
+
+    boolean validateSolution(int order, int carCapacity){
+        if(order > carCapacity)     return false;
+
+        List<Integer> tempCosts = new LinkedList<Integer> ();
+        for(Pair<Integer, Integer> pair : costs){
+            tempCosts.add(pair.getValue());
+        }
+        tempCosts.remove(new Integer(order));
+
+        LinkedList<Integer> carCapList = new LinkedList<Integer> ();
+        for(Magazine m: magazines)
+            for(Car car : m.cars)
+                carCapList.add(car.capacity);
+        carCapList.remove(new Integer(carCapacity));
+        carCapList.add(carCapacity-order);
+
+        Collections.sort(carCapList, new Comparator<Integer>() {    //descending order
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2.compareTo(o1);
+            }
+        });
+
+        for(Integer capacity : carCapList){
+            ListIterator itr = tempCosts.listIterator(tempCosts.size());
+            while(itr.hasPrevious()) {
+                int cost = (Integer) itr.previous();
+                if(capacity < tempCosts.get(0)) break;
+                if (cost <= capacity) {
+                    capacity -= cost;
+                    itr.remove();
+                }
+            }
+        }
+
+        if(tempCosts.size()==0) return true;
+        return false;
+    }
+
+
+
 
 
     int getTotalCarNumber(){
@@ -205,13 +259,13 @@ public class ProblemInstance {
             c.setInTravel();
         c.capacity -= where.getOrder();
         c.setPosition(where.getNumber());
-        ourGoalValue += distance[c.getPosition()][where.getNumber()];
+        ourGoalValue += distance[where.getNumber()][c.getPosition()];
         costs.remove(new Pair(where.getNumber(),where.getOrder()));
         c.roadMap.add(where.getNumber());
         if(!costs.isEmpty()){
             if(c.capacity<costs.get(0).getValue()){
                 c.roadMap.add(c.parentMagazine.getNumber());
-                ourGoalValue += distance[c.getPosition()][c.parentMagazine.getNumber()];
+                ourGoalValue += distance[c.parentMagazine.getNumber()][c.getPosition()];
                 c.setJobDone();
                 c.setPosition(c.parentMagazine.getNumber());
             }
@@ -232,7 +286,7 @@ public class ProblemInstance {
             for(Car c: m.cars)
                 if(c.isInTravel() && !c.isJobDone()) {
                     c.roadMap.add(c.parentMagazine.getNumber());
-                    ourGoalValue += distance[c.getPosition()][c.parentMagazine.getNumber()];
+                    ourGoalValue += distance[c.parentMagazine.getNumber()][c.getPosition()];
                     c.setJobDone();
                     c.setPosition(c.parentMagazine.getNumber());
                 }

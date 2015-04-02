@@ -21,14 +21,22 @@ public class DeliveryPoint {
         for(Integer neighbour: neighbourArray){
             neighbourhood.add(neighbour);
         }
-        neighbourhood.remove(0);
+
+        for(int i=0; i<neighbourhood.size(); i++){
+            if(neighbourhood.get(i) == this.number) {
+                neighbourhood.remove(i);
+                break;
+            }
+        }
+
         for(int j=start; j<finish;j++)
             neighbourhood.remove(new Integer(j));
 
     }
 
     Integer getClosestNeighbour(){
-        return neighbourhood.get(0);
+        if(neighbourhood.size()>0) return neighbourhood.get(0);
+        return -1;
     }
 
     int getOrder(){
