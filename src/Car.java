@@ -50,5 +50,7 @@ public class Car {
         return position;
     }
 
-
+    public void setPosition(int pos){
+        position=pos;
+    }
 }

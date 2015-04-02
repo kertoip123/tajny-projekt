@@ -123,11 +123,11 @@ public class ProblemInstance {
         for(Magazine m: magazines)
             for(Car c: m.cars)
                 if(!c.isJobDone())
-                    //compareWithTheLeader(c,theBestCarIndex, theBestPlaceToGo, theBestParentMagazine);
                     compareWithTheLeader(c);
         Car leader = magazines[theBestParentMagazine-deliveryPoints.length].getCar(theBestCarIndex);
         DeliveryPoint bestDestination = deliveryPoints[theBestPlaceToGo];
         makeMove(leader, bestDestination);
+        updateLists(theBestPlaceToGo);
     }
 
     void compareWithTheLeader(Car c, int theBestCarIndex, int theBestPlaceToGo, int theBestParentMagazine){
@@ -170,7 +170,8 @@ public class ProblemInstance {
                     theBestCarIndex = c.index;
                     theBestParentMagazine = c.parentMagazine.getNumber();
                     theBestPlaceToGo = closestNeigh;
-                }else if(distance[magazines[theBestParentMagazine].getCar(theBestCarIndex).getPosition()][theBestPlaceToGo] > distance[c.getPosition()][closestNeigh]){
+                }else if(distance[magazines[theBestParentMagazine-deliveryPoints.length].getCar(theBestCarIndex).getPosition()][theBestPlaceToGo]
+                        > distance[c.getPosition()][closestNeigh]){
                     theBestCarIndex = c.index;
                     theBestParentMagazine = c.parentMagazine.getNumber();
                     theBestPlaceToGo = closestNeigh;
@@ -203,14 +204,38 @@ public class ProblemInstance {
         if(!c.isInTravel())
             c.setInTravel();
         c.capacity -= where.getOrder();
+        c.setPosition(where.getNumber());
         ourGoalValue += distance[c.getPosition()][where.getNumber()];
         costs.remove(new Pair(where.getNumber(),where.getOrder()));
         c.roadMap.add(where.getNumber());
-        if(c.capacity<costs.get(0).getValue()){
-            c.roadMap.add(c.parentMagazine.getNumber());
-            ourGoalValue += distance[c.getPosition()][c.parentMagazine.getNumber()];
-            c.setJobDone();
+        if(!costs.isEmpty()){
+            if(c.capacity<costs.get(0).getValue()){
+                c.roadMap.add(c.parentMagazine.getNumber());
+                ourGoalValue += distance[c.getPosition()][c.parentMagazine.getNumber()];
+                c.setJobDone();
+                c.setPosition(c.parentMagazine.getNumber());
+            }
         }
+    }
+
+    private void updateLists(int elementToRemove){
+        for(DeliveryPoint dp: deliveryPoints){
+            dp.neighbourhood.remove(new Integer(elementToRemove));
+        }
+        for(Magazine m: magazines){
+            m.dpNeighbourhood.remove(new Integer(elementToRemove));
+        }
+    }
+
+    void moveRemainingCarsToParentMagazines(){
+        for(Magazine m: magazines)
+            for(Car c: m.cars)
+                if(c.isInTravel() && !c.isJobDone()) {
+                    c.roadMap.add(c.parentMagazine.getNumber());
+                    ourGoalValue += distance[c.getPosition()][c.parentMagazine.getNumber()];
+                    c.setJobDone();
+                    c.setPosition(c.parentMagazine.getNumber());
+                }
     }
 
 

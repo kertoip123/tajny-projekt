@@ -5,11 +5,14 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        ProblemInstance problemInstance = readInput("test.txt");
+        ProblemInstance problemInstance = readInput("problem_1.txt");
         problemInstance.createDistanceMatrix();
         problemInstance.createSortedCostList();
-        problemInstance.solveThisProblem();//One DP is satisfied by the best car available
+        for(int i=0;i<problemInstance.deliveryPoints.length;i++)
+            problemInstance.solveThisProblem();//One DP is satisfied by the best car available
+        problemInstance.moveRemainingCarsToParentMagazines();
         problemInstance.printResultsToConsole();
+        System.out.println(problemInstance.ourGoalValue);
 
         TestSolution testSolution = new TestSolution("problem_10.txt", "problem_10solution.txt");
         System.out.println("test goal value: " + testSolution);
