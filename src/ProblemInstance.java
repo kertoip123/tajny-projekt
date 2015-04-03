@@ -138,38 +138,6 @@ public class ProblemInstance {
         dpServed++;
     }
 
-    void compareWithTheLeader(Car c, int theBestCarIndex, int theBestPlaceToGo, int theBestParentMagazine){
-        if(c.isInTravel()){//Determining whether Magazine or DP should be considered
-            int closestNeigh = deliveryPoints[c.position].getClosestNeighbour().intValue();
-            if(deliveryPoints[closestNeigh].order<=c.getCapacity()){
-                if(theBestCarIndex==NO_COMPARISON_AVAILABLE){
-                    theBestCarIndex = c.index;
-                    theBestParentMagazine = c.parentMagazine.getNumber();
-                    theBestPlaceToGo = closestNeigh;
-                }else if(distance[magazines[theBestParentMagazine].getCar(theBestCarIndex).getPosition()][theBestPlaceToGo] > distance[c.getPosition()][closestNeigh]){
-                    theBestCarIndex = c.index;
-                    theBestParentMagazine = c.parentMagazine.getNumber();
-                    theBestPlaceToGo = closestNeigh;
-                }
-            }
-        }
-        else {
-            int closestNeigh = magazines[c.position-deliveryPoints.length].getClosestNeighbour().intValue();
-            if (deliveryPoints[closestNeigh].order <= c.getCapacity()) {
-                if (theBestCarIndex == NO_COMPARISON_AVAILABLE) {
-                    theBestCarIndex = c.index;
-                    theBestParentMagazine = c.parentMagazine.getNumber();
-                    theBestPlaceToGo = closestNeigh;
-                } else if (distance[magazines[theBestParentMagazine-deliveryPoints.length].getCar(theBestCarIndex).getPosition()][theBestPlaceToGo] >
-                        distance[c.getPosition()][closestNeigh]) {
-                    theBestCarIndex = c.index;
-                    theBestParentMagazine = c.parentMagazine.getNumber();
-                    theBestPlaceToGo = closestNeigh;
-                }
-            }
-        }
-    }
-
     void compareWithTheLeader(Car c){
         if(c.isInTravel()){//Determining whether Magazine or DP should be considered
             int closestNeigh = deliveryPoints[c.position].getClosestNeighbour().intValue();
@@ -258,8 +226,8 @@ public class ProblemInstance {
         if(!c.isInTravel())
             c.setInTravel();
         c.capacity -= where.getOrder();
-        c.setPosition(where.getNumber());
         ourGoalValue += distance[where.getNumber()][c.getPosition()];
+        c.setPosition(where.getNumber());
         costs.remove(new Pair(where.getNumber(),where.getOrder()));
         c.roadMap.add(where.getNumber());
         if(!costs.isEmpty()){

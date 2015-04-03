@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 public class TestSolution {
 
-    private static final String DIRECTORY = "10_przykladowych_problemow_z_rozwiazaniami/";
-
     private String inputFileName;
     private String outputFileName;
     private ProblemInstance problemInstance;
@@ -16,8 +14,8 @@ public class TestSolution {
 
     public TestSolution(String inputFileName, String outputFileName){
 
-        this.inputFileName = DIRECTORY+inputFileName;
-        this.outputFileName = DIRECTORY+outputFileName;
+        this.inputFileName = inputFileName;
+        this.outputFileName = outputFileName;
 
         this.problemInstance = Main.readInput(this.inputFileName);
         problemInstance.createDistanceMatrix();
