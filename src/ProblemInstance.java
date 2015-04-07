@@ -1,6 +1,4 @@
 import javafx.util.Pair;
-
-import java.text.Collator;
 import java.util.*;
 
 public class ProblemInstance {
@@ -11,12 +9,14 @@ public class ProblemInstance {
     List<Pair<Integer, Integer>> costs;
     final int NO_COMPARISON_AVAILABLE = -1;
     int ourGoalValue=0;
+    //int hamiltonianGoalValue = 0;
     int dpServed = 0;
 
     //Temp
     int theBestCarIndex = NO_COMPARISON_AVAILABLE;
     int theBestPlaceToGo = NO_COMPARISON_AVAILABLE;
     int theBestParentMagazine = NO_COMPARISON_AVAILABLE;
+    int initialCapacity;
 
     public ProblemInstance (int r, int d, int v, int c, DeliveryPoint [] dp, Magazine [] m) {
         deliveryPoints = new DeliveryPoint[r];
@@ -24,8 +24,9 @@ public class ProblemInstance {
         Magazine.setVehicles(v);
         magazines = m;
         deliveryPoints = dp;
+        initialCapacity = c;
         for(Magazine x: magazines)
-            x.createCars().setCapacities(c);
+            x.createCars().setCapacities(initialCapacity);
     }
 
     public void createSortedCostList(){
@@ -93,7 +94,16 @@ public class ProblemInstance {
     public void printResultsToConsole(){
         for(int i=0; i<magazines.length; i++){
             for(int j=0; j<Magazine.vehicles;j++){
-                System.out.println(magazines[i].cars[j].index + " " +magazines[i].cars[j].roadMap.toString());
+                System.out.println(magazines[i].cars[j].index + " " +magazines[i].cars[j].roadMap.toString() + " " +magazines[i].cars[j].distance);
+                ListIterator<Integer> it = magazines[i].cars[j].roadMap.listIterator();
+                Integer prev = it.next();
+                while(it.hasNext()) {
+                    Integer next = it.next();
+                    System.out.print(distance[prev][next] + " ");
+                    prev =next;
+
+                }
+                System.out.print("\n");
             }
         }
     }
@@ -137,6 +147,8 @@ public class ProblemInstance {
         updateLists(theBestPlaceToGo);
         dpServed++;
     }
+
+
 
     void compareWithTheLeader(Car c){
         if(c.isInTravel()){//Determining whether Magazine or DP should be considered
@@ -215,9 +227,6 @@ public class ProblemInstance {
     }
 
 
-
-
-
     int getTotalCarNumber(){
         return magazines.length*Magazine.vehicles;
     }
@@ -227,6 +236,7 @@ public class ProblemInstance {
             c.setInTravel();
         c.capacity -= where.getOrder();
         ourGoalValue += distance[where.getNumber()][c.getPosition()];
+        c.distance += distance[where.getNumber()][c.getPosition()];
         c.setPosition(where.getNumber());
         costs.remove(new Pair(where.getNumber(),where.getOrder()));
         c.roadMap.add(where.getNumber());
@@ -234,6 +244,7 @@ public class ProblemInstance {
             if(c.capacity<costs.get(0).getValue()){
                 c.roadMap.add(c.parentMagazine.getNumber());
                 ourGoalValue += distance[c.parentMagazine.getNumber()][c.getPosition()];
+                c.distance += distance[c.parentMagazine.getNumber()][c.getPosition()];
                 c.setJobDone();
                 c.setPosition(c.parentMagazine.getNumber());
             }
@@ -255,10 +266,138 @@ public class ProblemInstance {
                 if(c.isInTravel() && !c.isJobDone()) {
                     c.roadMap.add(c.parentMagazine.getNumber());
                     ourGoalValue += distance[c.parentMagazine.getNumber()][c.getPosition()];
+                    c.distance += distance[c.parentMagazine.getNumber()][c.getPosition()];
                     c.setJobDone();
                     c.setPosition(c.parentMagazine.getNumber());
                 }
     }
 
+    public void solveUsingShortestCycle(){
+        ourGoalValue = 0;
+        for(Magazine m: magazines)
+            for(Car c : m.cars)
+                ourGoalValue += c.getShortestHamiltonianCycle(distance);
+    }
+
+
+    public void findBetterSolution(){
+        boolean betterFound;
+        do {
+            betterFound = false;
+            final ArrayList<Pair<Car, Integer>> farthestPoints = new ArrayList (getTotalCarNumber());
+            for (Magazine m : magazines)
+                for (Car c : m.cars) {
+                    if(c.isJobDone())
+                        farthestPoints.add(new Pair(c, c.getTheFarthestPoint(distance)));
+                }
+
+            for(Pair<Car,Integer> p : farthestPoints){
+            /*    System.out.print(p.getValue() + ":     ");
+                for(Pair<Car, Integer> x : farthestPoints){
+                    System.out.print(x.getValue() +"-"+distance[p.getKey().parentMagazine.getNumber()][x.getValue()] + " ");
+                } */
+                    final int i = p.getValue();
+                    final int magazineNumber = p.getKey().parentMagazine.getNumber();
+                    Pair <Car, Integer> nearestPoint = Collections.min(farthestPoints, new Comparator<Pair<Car, Integer>> () {
+                        @Override
+                        public int compare (Pair<Car, Integer> o1, Pair<Car, Integer> o2) {
+                            if (o1.getValue() == i) return 1;
+                            if (o2.getValue() == i) return -1;
+                            return Integer.compare(distance[magazineNumber][o1.getValue()], distance[magazineNumber][o2.getValue()]);
+                        }
+                    });
+              //  System.out.print("\n" + nearestPoint.getValue()+"\n");
+                    betterFound = checkChangePossibility(p, nearestPoint);
+
+            }
+        } while(betterFound);
+
+    }
+
+    private boolean checkChangePossibility(Pair<Car, Integer> currentPoint, Pair<Car, Integer> newPoint){
+        Car c1 = currentPoint.getKey();
+        Car c2 = newPoint.getKey();
+        Integer o1 = currentPoint.getValue();
+        Integer o2 = newPoint.getValue();
+
+        if(o1 == o2)
+            return false;
+
+        int diff = deliveryPoints[o2].getOrder() - deliveryPoints[o1].getOrder();
+        if(c1.getCapacity()-diff >= 0 && c2.getCapacity() + diff >= 0){
+            //System.out.println("test");
+            LinkedList <Integer> temp1 = new LinkedList<Integer>(c1.roadMap);
+            LinkedList <Integer> temp2 = new LinkedList<Integer>(c2.roadMap);
+
+            c1.roadMap.remove(o1);
+            c1.roadMap.add(1, o2);
+            c2.roadMap.remove(o2);
+            c2.roadMap.add(1, o1);
+
+
+            int distanceCovered1 = c1.getShortestHamiltonianCycle(distance);
+            int distanceCovered2 = c2.getShortestHamiltonianCycle(distance);
+            int prevDistanceCovered = c1.distance + c2.distance;
+
+
+            int goalValueDiff = distanceCovered1 + distanceCovered2 - prevDistanceCovered;
+            if(goalValueDiff < 0) {
+               // System.out.println("old: " + temp1 + " " + temp2);
+               // System.out.println("new: " + c1.roadMap + " " + c2.roadMap);
+                c1.setCapacity(c1.getCapacity() - diff);
+                c2.setCapacity(c2.getCapacity()+diff);
+                c1.distance = distanceCovered1;
+                c2.distance = distanceCovered2;
+               // System.out.println(c1.getCapacity() + " " + c2.getCapacity());
+                ourGoalValue += goalValueDiff;
+               // System.out.println(ourGoalValue);
+                return true;
+            }
+           // System.out.println(goalValueDiff);
+            c1.roadMap = temp1;
+            c2.roadMap = temp2;
+        }
+        return false;
+    }
+
+   public void swapPoints(){
+
+        boolean betterFound;
+
+        do {
+            betterFound = false;
+            LinkedList<Pair<Car, Integer>> mostExpensivePoints = createMostExpensivePointsList();
+            ListIterator<Pair<Car, Integer>> it1 = mostExpensivePoints.listIterator();
+            ListIterator<Pair<Car, Integer>> it2 = mostExpensivePoints.listIterator();
+            while (it1.hasNext()) {
+                Pair<Car, Integer> p1 = it1.next();
+                while (it2.hasNext()) {
+                    Pair<Car, Integer> p2 = it2.next();
+                    if (checkChangePossibility(p1, p2)) {
+                        betterFound = true;
+                        mostExpensivePoints.remove(p2);
+                        break;
+                    }
+                }
+                if(betterFound){
+                    mostExpensivePoints.remove(p1);
+                    break;
+                }
+
+                it2 = mostExpensivePoints.listIterator();
+            }
+
+        }   while(betterFound);
+    }
+
+    private LinkedList<Pair<Car, Integer>> createMostExpensivePointsList(){
+        LinkedList<Pair<Car, Integer>> mostExpensivePoints = new LinkedList ();
+        for (Magazine m : magazines)
+            for (Car c : m.cars) {
+                if (c.isJobDone())
+                    mostExpensivePoints.add(new Pair(c, c.findTheMostExpensivePoint(distance)));
+            }
+        return mostExpensivePoints;
+    }
 
 }

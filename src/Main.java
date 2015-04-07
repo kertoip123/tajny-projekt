@@ -8,8 +8,8 @@ public class Main {
 
     private static final String DIRECTORY = "10_przykladowych_problemow_z_rozwiazaniami/";
     private static final String OUR_DIRECTORY = "ourSolutions/";
-    private static final String problemChosen = "problem_8.txt";
-    private static final String solutionChosen = "problem_8solution.txt";
+    private static final String problemChosen = "problem_7.txt";
+    private static final String solutionChosen = "problem_7_solution.txt";
 
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
@@ -21,21 +21,51 @@ public class Main {
         while (problemInstance.dpServed < problemInstance.deliveryPoints.length)
             problemInstance.solveThisProblem();//One DP is satisfied by the best car available
         problemInstance.moveRemainingCarsToParentMagazines();
+        problemInstance.solveUsingShortestCycle();
+      //  problemInstance.printResultsToConsole();
+       // System.out.println(problemInstance.ourGoalValue);
+
+      //  problemInstance.findBetterSolution();
+        problemInstance.swapPoints();
         problemInstance.printResultsToConsole();
+        System.out.println(problemInstance.ourGoalValue);
 
         long stopTime = System.currentTimeMillis();
         Long diff = stopTime - startTime;
         System.out.println(diff.doubleValue() / 1000 + "s");
 
-        System.out.println(problemInstance.ourGoalValue);
+        System.out.println(TestSolution.verification(problemInstance));
 
-        wirteOutput(OUR_DIRECTORY + solutionChosen, problemInstance);
+        //problemInstance.solveUsingShortestCycle();
+        //System.out.println(problemInstance.ourGoalValue);
+        //System.out.println(TestSolution.verification(problemInstance));
+
+
+        writeOutput(OUR_DIRECTORY + solutionChosen, problemInstance);
 
         TestSolution testSolution = new TestSolution(DIRECTORY+problemChosen, DIRECTORY+solutionChosen);
         System.out.println("Provided test goal value: " + testSolution);
         TestSolution ourTestSolution = new TestSolution(DIRECTORY+problemChosen, OUR_DIRECTORY+solutionChosen);
         System.out.println("Our test goal value: " + ourTestSolution);
 
+
+/*
+        Car c = new Car(new Magazine(1,1,54), 1);
+        int cost = 0;
+       // c.roadMap.add(new Integer(54));
+        c.roadMap.add(new Integer (19));
+        cost += problemInstance.distance[54][19];
+        c.roadMap.add(new Integer (15));
+        cost += problemInstance.distance[19][15];
+        c.roadMap.add(new Integer (10));
+        cost += problemInstance.distance[15][10];
+        c.roadMap.add(new Integer (13));
+        cost += problemInstance.distance[10][13];
+        c.roadMap.add(new Integer(54));
+        cost += problemInstance.distance[13][54];
+        System.out.println(c.roadMap.toString()+" "+cost);
+        c.getShortestHamiltonianCycle(problemInstance.distance);
+*/
     }
 
     static ProblemInstance readInput (String fileName){
@@ -74,7 +104,7 @@ public class Main {
         return problem;
     }
 
-    static void wirteOutput (String fileName, ProblemInstance problem){
+    static void writeOutput (String fileName, ProblemInstance problem){
 
         try {
             FileWriter writer = new FileWriter(new File(fileName));

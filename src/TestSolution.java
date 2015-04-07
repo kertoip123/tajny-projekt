@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -41,8 +43,10 @@ public class TestSolution {
                     next = scanner.nextInt()-1;
 
                     goalValue += problemInstance.getDistance(previous, next);
+                    System.out.print(problemInstance.getDistance(previous, next)+ " ");
                     previous = next;
                 }while(begin != previous);
+                System.out.print("\n");
             }
 
 
@@ -59,4 +63,30 @@ public class TestSolution {
         return ((Integer)goalValue).toString();
     }
 
+    static boolean verification(ProblemInstance problemInstance){
+        int testGoalValue = 0;
+        problemInstance.createSortedCostList();
+        for(Magazine m: problemInstance.magazines)
+            for(Car c : m.cars) {
+                int previousPoint = -1;
+                int capacity = problemInstance.initialCapacity;
+                for (Integer point : c.roadMap) {
+                    if(previousPoint == -1){
+                        previousPoint = point;
+                        continue;
+                    }
+                    testGoalValue += problemInstance.getDistance(previousPoint,point);
+                    previousPoint = point;
+                    if(point == c.parentMagazine.getNumber())  continue;
+                    int cost = problemInstance.deliveryPoints[point].getOrder();
+                    capacity -= cost;
+                    problemInstance.costs.remove(new Pair<Integer, Integer>(point, cost));
+
+                }
+                if (capacity < 0 ) return false;
+            }
+        if(problemInstance.costs.size()>0 || testGoalValue != problemInstance.ourGoalValue )
+            return false;
+        return true;
+    }
 }
