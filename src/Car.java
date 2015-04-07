@@ -119,6 +119,7 @@ public class Car {
        // if(!roadMap.containsAll(Arrays.asList(order)))
           //  System.out.println(Arrays.toString(order)+res);
         roadMap = new LinkedList<Integer>(Arrays.asList(order));
+        distance = res;
         return res;
     }
 

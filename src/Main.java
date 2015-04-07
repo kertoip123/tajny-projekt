@@ -8,13 +8,13 @@ public class Main {
 
     private static final String DIRECTORY = "10_przykladowych_problemow_z_rozwiazaniami/";
     private static final String OUR_DIRECTORY = "ourSolutions/";
-    private static final String problemChosen = "problem_7.txt";
-    private static final String solutionChosen = "problem_7_solution.txt";
+    private static final String problemChosen = "problem_3.txt";
+    private static final String solutionChosen = "problem_3_solution.txt";
 
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
 
-        ProblemInstance problemInstance = readInput(DIRECTORY+problemChosen);
+        ProblemInstanceTwo problemInstance = readInput(DIRECTORY+problemChosen);
         problemInstance.createDistanceMatrix();
         problemInstance.createSortedCostList();
 
@@ -68,9 +68,9 @@ public class Main {
 */
     }
 
-    static ProblemInstance readInput (String fileName){
+    static ProblemInstanceTwo readInput (String fileName){
 
-        ProblemInstance problem = null;
+        ProblemInstanceTwo problem = null;
 
         try {
             Scanner scanner = new Scanner(new File(fileName));
@@ -97,14 +97,14 @@ public class Main {
                     m[index-r] = new Magazine(x, y, index);
             }
 
-            problem = new ProblemInstance(r, d, v, c, dp, m);
+            problem = new ProblemInstanceTwo(r, d, v, c, dp, m);
         }
         catch (FileNotFoundException e) { e.printStackTrace(); }
 
         return problem;
     }
 
-    static void writeOutput (String fileName, ProblemInstance problem){
+    static void writeOutput (String fileName, ProblemInstanceTwo problem){
 
         try {
             FileWriter writer = new FileWriter(new File(fileName));

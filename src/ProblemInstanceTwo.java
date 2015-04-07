@@ -153,6 +153,8 @@ public class ProblemInstanceTwo {
 
 
     void solveThisProblem(){
+        //if(dpServed == 45)  dpServed = 50;
+        //System.out.println(dpServed);
         theBestCarIndex = NO_COMPARISON_AVAILABLE;
         theBestPlaceToGo = NO_COMPARISON_AVAILABLE;
         theBestParentMagazine = NO_COMPARISON_AVAILABLE;
@@ -279,7 +281,7 @@ public class ProblemInstanceTwo {
     private void updateLists(int elementToRemove){
         elementsToRemove.add(elementToRemove);
         for(DeliveryPoint dp: deliveryPoints){
-            if(!dp.neighbourhood.isEmpty()){
+            if(dp.neighbourhood!=null){//!dp.neighbourhood.isEmpty()){
                 Iterator<Integer> it = elementsToRemove.iterator();
                 while(it.hasNext())
                     dp.neighbourhood.remove(new Integer(it.next()));

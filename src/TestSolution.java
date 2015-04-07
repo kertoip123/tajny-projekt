@@ -8,7 +8,7 @@ public class TestSolution {
 
     private String inputFileName;
     private String outputFileName;
-    private ProblemInstance problemInstance;
+    private ProblemInstanceTwo problemInstance;
 
     private int goalValue=0;
 
@@ -43,10 +43,10 @@ public class TestSolution {
                     next = scanner.nextInt()-1;
 
                     goalValue += problemInstance.getDistance(previous, next);
-                    System.out.print(problemInstance.getDistance(previous, next)+ " ");
+                   // System.out.print(problemInstance.getDistance(previous, next)+ " ");
                     previous = next;
                 }while(begin != previous);
-                System.out.print("\n");
+              //  System.out.print("\n");
             }
 
 
@@ -63,11 +63,13 @@ public class TestSolution {
         return ((Integer)goalValue).toString();
     }
 
-    static boolean verification(ProblemInstance problemInstance){
+    static boolean verification(ProblemInstanceTwo problemInstance){
         int testGoalValue = 0;
+        int totalDistance=0;
         problemInstance.createSortedCostList();
         for(Magazine m: problemInstance.magazines)
             for(Car c : m.cars) {
+                totalDistance += c.distance;
                 int previousPoint = -1;
                 int capacity = problemInstance.initialCapacity;
                 for (Integer point : c.roadMap) {
@@ -85,7 +87,7 @@ public class TestSolution {
                 }
                 if (capacity < 0 ) return false;
             }
-        if(problemInstance.costs.size()>0 || testGoalValue != problemInstance.ourGoalValue )
+        if(problemInstance.costs.size()>0 || testGoalValue != problemInstance.ourGoalValue || totalDistance != problemInstance.ourGoalValue )
             return false;
         return true;
     }

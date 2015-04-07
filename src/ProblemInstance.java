@@ -99,11 +99,11 @@ public class ProblemInstance {
                 Integer prev = it.next();
                 while(it.hasNext()) {
                     Integer next = it.next();
-                    System.out.print(distance[prev][next] + " ");
+                   // System.out.print(distance[prev][next] + " ");
                     prev =next;
 
                 }
-                System.out.print("\n");
+               // System.out.print("\n");
             }
         }
     }
@@ -334,15 +334,14 @@ public class ProblemInstance {
             c2.roadMap.remove(o2);
             c2.roadMap.add(1, o1);
 
-
+            int prevDistanceCovered1 = c1.distance;
+            int prevDistanceCovered2 = c2.distance;
             int distanceCovered1 = c1.getShortestHamiltonianCycle(distance);
             int distanceCovered2 = c2.getShortestHamiltonianCycle(distance);
-            int prevDistanceCovered = c1.distance + c2.distance;
 
-
-            int goalValueDiff = distanceCovered1 + distanceCovered2 - prevDistanceCovered;
+            int goalValueDiff = distanceCovered1 + distanceCovered2 - prevDistanceCovered1 - prevDistanceCovered2;
             if(goalValueDiff < 0) {
-               // System.out.println("old: " + temp1 + " " + temp2);
+                //System.out.println("old: " + temp1 + " " + temp2);
                // System.out.println("new: " + c1.roadMap + " " + c2.roadMap);
                 c1.setCapacity(c1.getCapacity() - diff);
                 c2.setCapacity(c2.getCapacity()+diff);
@@ -353,7 +352,9 @@ public class ProblemInstance {
                // System.out.println(ourGoalValue);
                 return true;
             }
-           // System.out.println(goalValueDiff);
+          //  System.out.println(goalValueDiff);
+            c1.distance = prevDistanceCovered1;
+            c2.distance = prevDistanceCovered2;
             c1.roadMap = temp1;
             c2.roadMap = temp2;
         }
