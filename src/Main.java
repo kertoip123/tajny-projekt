@@ -26,7 +26,7 @@ public class Main {
        // System.out.println(problemInstance.ourGoalValue);
 
       //  problemInstance.findBetterSolution();
-        problemInstance.swapPoints();
+      //  problemInstance.swapPoints();
         problemInstance.printResultsToConsole();
         System.out.println(problemInstance.ourGoalValue);
 
