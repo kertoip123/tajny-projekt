@@ -4,22 +4,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class TestSolution {
+public class TestSolutionTwo {
 
     private String inputFileName;
     private String outputFileName;
-    private ProblemInstance problemInstance;
+    private ProblemInstanceTwo problemInstance;
 
     private int goalValue=0;
 
     private int numberOfCars;
 
-    public TestSolution(String inputFileName, String outputFileName){
+    public TestSolutionTwo(String inputFileName, String outputFileName){
 
         this.inputFileName = inputFileName;
         this.outputFileName = outputFileName;
 
-        this.problemInstance = Main.readInput(this.inputFileName);
+        this.problemInstance = Main.readInputTwo(this.inputFileName);
         problemInstance.createDistanceMatrix();
 
         this.numberOfCars = problemInstance.getTotalCarNumber();
@@ -43,10 +43,10 @@ public class TestSolution {
                     next = scanner.nextInt()-1;
 
                     goalValue += problemInstance.getDistance(previous, next);
-                   // System.out.print(problemInstance.getDistance(previous, next)+ " ");
+                    // System.out.print(problemInstance.getDistance(previous, next)+ " ");
                     previous = next;
                 }while(begin != previous);
-              //  System.out.print("\n");
+                //  System.out.print("\n");
             }
 
 
@@ -63,7 +63,7 @@ public class TestSolution {
         return ((Integer)goalValue).toString();
     }
 
-    static boolean verification(ProblemInstance problemInstance){
+    static boolean verification(ProblemInstanceTwo problemInstance){
         int testGoalValue = 0;
         int totalDistance=0;
         problemInstance.createSortedCostList();

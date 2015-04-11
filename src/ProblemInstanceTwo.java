@@ -22,6 +22,11 @@ public class ProblemInstanceTwo {
     int initialCapacity;
     //
     List<Integer> elementsToRemove = new LinkedList<Integer>();
+    final int WAGA = 2;
+    final int WAGADWA = 3;
+
+    //
+    long startTime;
 
     public ProblemInstanceTwo (int r, int d, int v, int c, DeliveryPoint [] dp, Magazine [] m) {
         deliveryPoints = new DeliveryPoint[r];
@@ -32,6 +37,10 @@ public class ProblemInstanceTwo {
         initialCapacity = c;
         for(Magazine x: magazines)
             x.createCars().setCapacities(initialCapacity);
+    }
+
+    public void setStartTime(long time){
+        startTime=time;
     }
 
     public void createSortedCostList(){
@@ -142,7 +151,7 @@ public class ProblemInstanceTwo {
         Integer [] tempArray =  new Integer[array.length];
         int k=0;
         for (int value : array) {
-            tempArray[k] = Integer.valueOf(value+distance[k][MagazineIndex]);
+            tempArray[k] = Integer.valueOf(WAGA*value+WAGADWA*distance[k][MagazineIndex]);
             k++;
         }
         return tempArray;
@@ -152,9 +161,13 @@ public class ProblemInstanceTwo {
 
 
 
-    void solveThisProblem(){
+    boolean solveThisProblem(){
         //if(dpServed == 45)  dpServed = 50;
         //System.out.println(dpServed);
+        Long diff = System.currentTimeMillis() - startTime;
+        if(diff.doubleValue()/1000 > 1.00){
+            return false;
+        }
         theBestCarIndex = NO_COMPARISON_AVAILABLE;
         theBestPlaceToGo = NO_COMPARISON_AVAILABLE;
         theBestParentMagazine = NO_COMPARISON_AVAILABLE;
@@ -162,12 +175,13 @@ public class ProblemInstanceTwo {
             for(Car c: m.cars)
                 if(!c.isJobDone())
                     compareWithTheLeader(c);
-        if(theBestPlaceToGo == NO_COMPARISON_AVAILABLE) return;
+        if(theBestPlaceToGo == NO_COMPARISON_AVAILABLE) return true;
         Car leader = magazines[theBestParentMagazine-deliveryPoints.length].getCar(theBestCarIndex);
         DeliveryPoint bestDestination = deliveryPoints[theBestPlaceToGo];
         makeMove(leader, bestDestination);
         updateLists(theBestPlaceToGo);
         dpServed++;
+        return true;
     }
 
 
